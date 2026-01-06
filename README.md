@@ -1,12 +1,4 @@
-# Enterprise RAG (production-minded portfolio project)
-
-This repo is a small RAG system you can run locally.
-
-I built it to practice the parts hiring managers actually care about:
-- retrieval knobs you can explain
-- messy corpora (duplicates, outdated pages, inconsistent formatting)
-- debugging notes when retrieval fails
-
+# Enterprise RAG System with Hybrid Search & Reranking
 
 ## Goal
 
@@ -113,9 +105,3 @@ These are real “retrieval debugging” style notes:
 - **No embedding fine-tuning (yet).** I’m using off-the-shelf models to keep the repo runnable locally.
   Next step would be domain adaptation (or at least a better embedding model) once I have a labeled eval set.
 
-## What’s next
-
-- persistence: Chroma/pgvector
-- incremental ingestion (background jobs) instead of full rebuild
-- auth, rate limiting
-- tracing (OpenTelemetry) + offline eval in CI (see `app/core/eval.py`)
