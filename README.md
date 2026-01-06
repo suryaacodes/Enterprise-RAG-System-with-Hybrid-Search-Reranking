@@ -44,54 +44,8 @@ curl -X POST http://127.0.0.1:8000/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Are alcoholic drinks reimbursable?", "k": 5}'
 ```
-flowchart TB
-  %% =========================
-  %% Enterprise RAG System
-  %% Hybrid Search + Reranking
-  %% =========================
+<img width="1536" height="1024" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/c69a2c2e-e92d-4ac0-8253-3682fe294786" />
 
-  U[User / Client] -->|/ask (question)| API[FastAPI Service]
-  U -->|/search (debug)| API
-  U -->|/ingest (docs)| API
-
-  subgraph ING[Ingestion Pipeline]
-    D[Documents\n(PDF/HTML/MD/Text/JSON)] --> N[Normalize + Clean\n(dedupe, metadata)]
-    N --> C[Chunking\n(size/overlap, boundaries)]
-    C --> E[Embedding Model\n(BGE/E5)]
-  end
-
-  API -->|/ingest| ING
-
-  E --> VS[(Vector Index\nFAISS / Vector DB)]
-  C --> BM[(BM25 Index\nInverted Index)]
-
-  subgraph RET[Retrieval & Ranking]
-    Q[Query] --> QE[Query Embed]
-    QE --> DR[Dense Retrieve\nTop-Kd]
-    Q --> BR[BM25 Retrieve\nTop-Kb]
-    DR --> H[Hybrid Merge\n(weighted + dedupe)]
-    BR --> H
-    H --> RR[Reranker\nCross-Encoder\nTop-Kr]
-  end
-
-  API -->|/ask or /search| Q
-  RR --> CTX[Context Builder\n(citations, max tokens)]
-  CTX --> LLM[LLM Generator]
-  LLM --> ANS[Answer + Sources]
-
-  ANS --> API --> U
-
-  subgraph OPS[Ops & Quality]
-    LOG[Structured Logs]
-    TR[Tracing / Metrics\n(latency, hit-rate)]
-    EV[Offline Eval\nP@K, MRR, nDCG]
-    CA[(Cache)\n(query/results)]
-  end
-
-  API --> LOG
-  API --> TR
-  API --> CA
-  RET --> EV
 
 
 ## Engineering decisions
